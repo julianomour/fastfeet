@@ -21,42 +21,29 @@ class RecipientController {
     return res.json(recipient);
   }
 
-  // async update(req, res) {
-  //   const schema = Yup.object().shape({
-  //     name: Yup.string(),
-  //     email: Yup.string().email(),
-  //     oldPassword: Yup.string().min(6),
-  //     password: Yup.string()
-  //       .min(6)
-  //       .when('oldPassword', (oldPassword, field) =>
-  //         oldPassword ? field.required() : field
-  //       ),
-  //     confirmPassword: Yup.when('password', (password, field) =>
-  //       password ? field.required().oneOf([Yup.ref('password')]) : field
-  //     ),
-  //   });
+  async update(req, res) {
+    const schema = Yup.object().shape({
+      name: Yup.string(),
+      street: Yup.string(),
+      number: Yup.string(),
+      complement: Yup.string(),
+      state: Yup.string(),
+      city: Yup.string(),
+      zip: Yup.string(),
+    });
 
-  //   if (!(await schema.isValid(req.body))) {
-  //     return res.status(400).json({ error: 'Validation fails' });
-  //   }
+    if (!(await schema.isValid(req.body))) {
+      return res.status(400).json({ error: 'Validation fails' });
+    }
 
-  //   const { email, oldPassword } = req.body;
-  //   const user = await Recipient.findByPk(req.userId);
+    let recipient = await Recipient.findByPk(req.params.id);
+    if (!recipient) {
+      return res.status(400).json({ error: 'User not found' });
+    }
 
-  //   if (email && email !== user.email) {
-  //     const recipientExists = await Recipient.findOne({ where: { email } });
-  //     if (recipientExists) {
-  //       return res.status(400).json({ error: 'User already exists' });
-  //     }
-  //   }
+    recipient = await recipient.update(req.body);
 
-  //   if (oldPassword && !(await user.checkPassword(oldPassword))) {
-  //     return res.status(401).json({ error: "Password doesn't match" });
-  //   }
-
-  //   const { id, name, provider } = await user.update(req.body);
-
-  //   return res.json({ id, name, email, provider });
-  // }
+    return res.json(recipient);
+  }
 }
 export default new RecipientController();
