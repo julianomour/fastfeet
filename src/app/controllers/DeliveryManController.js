@@ -1,7 +1,7 @@
 import * as Yup from 'yup';
 import Deliveryman from '../models/Deliveryman';
 
-class UserController {
+class DeliverymanController {
   async index(req, res) {
     const deliverymen = await Deliveryman.findAll({ as: 'Deliverymen' });
     return res.json(deliverymen);
@@ -41,7 +41,8 @@ class UserController {
       return res.status(400).json({ error: 'Validation fails' });
     }
 
-    const { id, email } = req.params;
+    const { id } = req.params;
+    const { email } = req.body;
     const deliveryman = await Deliveryman.findByPk(id);
 
     if (!deliveryman) {
@@ -75,4 +76,4 @@ class UserController {
     });
   }
 }
-export default new UserController();
+export default new DeliverymanController();
